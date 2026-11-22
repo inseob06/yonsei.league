@@ -4,30 +4,121 @@
 #include <stdlib.h>
 #include "game.h"
 
-// ※ 뼈대 파일: 함수 모양만 있고 내용은 비어 있다. 하나씩 완성해서 바꾼다. (담당: 신인섭)
-
 int read_number(int min, int max)
 {
-    // TODO: min~max 사이 숫자를 입력받아 돌려준다. 잘못 입력하면 다시 묻는다.
-    return min;
+    int n;
+    int result;
+    int c;
+        while (1) {
+        result = scanf("%d", &n);
+        if (result == EOF) { 
+            exit(0);
+        }
+        if (result == 1 && n >= min && n <= max) {
+            return n; 
+        }
+       
+        // 숫자가 아니면 남은 글자를 줄 끝까지 버린다 (안 버리면 무한 반복)
+        while ((c = getchar()) != '\n' && c != EOF) {
+        }
+        printf("%d~%d 사이 숫자를 다시 입력하세요: ", min, max);
+    }
 }
 
 void print_zone(int course, int aim)
 {
-    // TODO: 3x3 스트라이크존을 그린다. 공은 *, 노린 칸은 O, 둘이 같으면 @
+    int n;
+        for (n = 1; n <= 9; n++) {
+        if (n == course && n == aim) {
+            printf("[@]");
+        }
+        else if (n == course) {
+            printf("[*]");
+            
+        }
+        else if (n == aim) {
+            printf("[O]");
+            
+        }
+        else {
+            printf("[%d]", n);
+            
+        }
+        if (n % 3 == 0) { // 3칸마다 줄바꿈
+            printf("\n");
+            
+        }
+        
+    }
+    if (course == 0) {
+        printf("(공이 존 밖으로 빠졌다)\n");
+    }
 }
 
 void print_mark(int on)
 {
-    // TODO: on이 1이면 ●, 아니면 ○ 출력
+    if (on == 1) {
+        printf("●");
+        
+    }
+    else {
+        printf("○");
+     
+    }
 }
 
 void print_bases(Situation *s)
 {
-    // TODO: 주자 상황(1·2·3루)과 아웃 수를 다이아몬드 모양으로 출력
+    printf("\n         ");
+    print_mark(s->base[1]);
+    printf(" 2루\n");
+    printf("   3루 ");
+    print_mark(s->base[2]);
+    printf("       ");
+    print_mark(s->base[0]);
+    printf(" 1루     %d아웃\n", s->outs);
 }
 
 void print_scoreboard(Team *away, Team *home, int innings, int done)
 {
-    // TODO: 이닝별 점수, 득점(R), 안타(H) 점수판 출력
+    int i;
+
+    printf("\n         ");
+    for (i = 0; i < innings; i++) {
+        printf("%2d ", i + 1);
+        
+    }
+    printf("|  R  H\n");
+    
+    printf(" 내 팀   ");
+    for (i = 0; i < innings; i++) {
+        if (i < done) {
+            printf("%2d ", away->score[i]);
+            
+        }
+        else {
+            printf(" - ");
+            
+        }
+       
+    }
+    printf("| %2d %2d\n", away->runs, away->hits);
+    
+    printf(" 컴퓨터  ");
+    for (i = 0; i < innings; i++) {
+        if (i >= done) {
+            printf(" - ");
+            
+        }
+        else if (home->score[i] == -1) {
+            printf(" X "); // 마지막 이닝 말 공격 안 함
+            
+        }
+        else {
+            printf("%2d ", home->score[i]);
+            
+        }
+        
+    }
+    printf("| %2d %2d\n", home->runs, home->hits);
 }

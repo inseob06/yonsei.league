@@ -1,5 +1,5 @@
-﻿/* display.c — 화면 출력과 입력 (담당: 신인섭) */
-#define _CRT_SECURE_NO_WARNINGS    
+﻿// display.c - 신인섭
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include "game.h"
@@ -18,7 +18,7 @@ int read_number(int min, int max)
             return n; 
         }
        
-
+        // 남은 입력 지우기
         while ((c = getchar()) != '\n' && c != EOF) {
         }
         printf("%d~%d 사이 숫자를 다시 입력하세요: ", min, max);
@@ -44,7 +44,7 @@ void print_zone(int course, int aim)
             printf("[%d]", n);
             
         }
-        if (n % 3 == 0) { 
+        if (n % 3 == 0) { // 3칸마다 줄바꿈
             printf("\n");
             
         }
@@ -111,7 +111,7 @@ void print_scoreboard(Team *away, Team *home, int innings, int done)
             
         }
         else if (home->score[i] == -1) {
-            printf(" X "); 
+            printf(" X "); // 마지막 이닝 말 공격 안 함
             
         }
         else {

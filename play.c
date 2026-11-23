@@ -105,6 +105,13 @@ int judge(Pitch *p, int aim)
 
 int hit_result(void)
 {
+    int r = rand() % 100;
+
+    if (r < 8)  return HOMERUN;
+    if (r < 10) return TRIPLE;
+    if (r < 23) return DOUBLE;
+    if (r < 55) return SINGLE;
+    
     return OUT;
 }
 

@@ -131,18 +131,106 @@ int hit_result(void)
 
 int run_bases(Situation *s, int n)
 {
-    
-    return 0;
+    int runs = 0;
+    int i;
+
+    for (i = 2; i >= 0; i--) {        
+        if (s->base[i] == 1) {
+            s->base[i] = 0;
+            if (i + n >= 3) {
+                runs++;             
+            }
+            else {
+                s->base[i + n] = 1;   
+            }
+        }
+    }
+    if (n == HOMERUN) {
+        runs++;                     
+    }
+    else {
+        s->base[n - 1] = 1;          
+    }
+    return runs;
 }
 
 int walk(Situation *s)
 {
-   
-    return 0;
+    int runs = 0;
+
+    if (s->base[0] == 1) {          
+        if (s->base[1] == 1) {     
+            if (s->base[2] == 1) { 
+                runs = 1;
+            }
+            s->base[2] = 1;
+        }
+        s->base[1] = 1;
+    }
+    s->base[0] = 1;                
+    return runs;
 }
 
 int play_at_bat(Team *bat, Situation *s, int user_bats)
 {
-   
-    return OUT;
+    Pitch p;
+    int aim, result;
+
+    s->strike = 0;
+    s->ball = 0;
+    printf("\n▶ %s %d번 타자 등장!\n", bat->name, bat->batter);
+
+    while (1) {                                    // 한 번 돌 때마다 공 하나
+        printf("\n[%d 볼 %d 스트라이크]\n", s->ball, s->strike);
+        choose_pitch(&p, s, 1 - user_bats);        // 내가 타자(1)면 컴퓨터(0)가
+
+        aim = choose_swing(&p, s, user_bats);
+
+        if (p.type == 1) {
+            printf("  → 직구! ");
+        }
+        else {
+            printf("  → 변화구! ");
+        }
+        if (aim == 0) {
+            printf("타자는 지켜봤다\n");
+        }
+        else {
+            printf("타자는 %d 번 칸을 노리고 스윙\n", aim);
+        }
+        print_zone(p.course, aim);
+
+        result = judge(&p, aim);
+        if (result == BALL) {
+            printf("  볼!\n");
+            s->ball++;
+            if (s->ball == 4) {
+                return WALK;
+            }
+        }
+        else if (result == STRIKE) {
+            if (aim == 0) {
+                printf("  스트라이크! (루킹)\n");
+            }
+            else {
+                printf("  헛스윙!\n");
+            }
+            s->strike++;
+            if (s->strike == 3) {
+                printf("  삼진 아웃!\n");
+                return OUT;
+            }
+        }
+        else if (result == FOUL) {
+            printf("  파울!\n");
+            if (s->strike < 2) {
+                s->strike++;            
+            }
+        }
+        else {                       
+            return hit_result();
+        }
+    }
+    return OUT;  //뭐지
 }
+
